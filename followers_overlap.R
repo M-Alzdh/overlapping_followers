@@ -41,10 +41,28 @@ for(i in 1:10){
   data[[i]] <- sample(IDs, cut_off_10000(rnorm(1, 5000, 5000)))
 }
 
-overlap <- matrix(nrow = 10, ncol = 10, )
+
+# calculate overlap between different accounts
+
+
+overlap <- matrix(nrow = 10, ncol = 10)
 
 for(i in 1:10){
   for(j in 1:10){
     overlap[i, j] <- (length(intersect(data[[i]], data[[j]])))/(length(data[[i]]))
   }
 }
+
+# turning data into the long format
+
+tb_overlap <- as_tibble(overlap) %>% 
+  mutate(rowid = paste("inf", 1:10)) %>% 
+  select(rowid, everything())
+tb_overlap
+tb_overlap_long <- pivot_longer(tb_overlap, cols= -rowid)
+
+tb_overlap_long
+
+ggplot(data = tb_overlap_long)+
+  geom_tile(aes(rowid, name, fill = value))+
+  scale_fill_fermenter()
