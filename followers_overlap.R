@@ -37,9 +37,14 @@ cut_off_10000 <- function(x){
   }
 }
 
-
 for(i in 1:10){
-  data[[i]] <- sample(IDs, cut_off_10000(rnorm(1, 5000, 1000)))
+  data[[i]] <- sample(IDs, cut_off_10000(rnorm(1, 5000, 5000)))
 }
 
-rm(list)
+overlap <- matrix(nrow = 10, ncol = 10, )
+
+for(i in 1:10){
+  for(j in 1:10){
+    overlap[i, j] <- (length(intersect(data[[i]], data[[j]])))/(length(data[[i]]))
+  }
+}
