@@ -45,6 +45,8 @@ for(i in 1:10){
 
 # calculate overlap between different accounts
 
+#using just intersection
+
 overlap <- matrix(nrow = 10, ncol = 10)
 
 for(i in 1:10){
@@ -52,6 +54,8 @@ for(i in 1:10){
     overlap[i, j] <- (length(intersect(data[[i]], data[[j]])))/(length(data[[i]]))
   }
 }
+
+#using jaccard index
 
 jaccard_indx <- matrix(nrow = 10, ncol = 10)
   
@@ -66,19 +70,13 @@ jaccard_indx <- matrix(nrow = 10, ncol = 10)
 tb_overlap <- as_tibble(overlap) %>% 
   mutate(rowid = paste("inf", 1:10)) %>% 
   select(rowid, everything())
-tb_overlap
+
 tb_overlap_long <- pivot_longer(tb_overlap, cols= -rowid)
 
 tb_jaccard_indx <- as_tibble(jaccard_indx) %>% 
   mutate(rowid = paste("inf", 1:10)) %>% 
   select(rowid, everything())
 tb_jaccard_indx <- pivot_longer(tb_jaccard_indx, cols= -rowid)
-
-
-
-ggplot(data = tb_overlap_long)+
-  geom_tile(aes(rowid, name, fill = value))+
-  scale_fill_fermenter()
 
 # plotting
 
