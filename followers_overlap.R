@@ -33,13 +33,16 @@ cut_off_10000 <- function(x){
   if(x>10000){
     10000
   } else{
-    x
+    abs(x)
   }
 }
 
 #????? this line does not work the first time around
+
+
 for(i in 1:10){
-  data[[i]] <- sample(IDs, cut_off_10000(rnorm(1, 5000, 5000)))
+  size <- as.integer(cut_off_10000(rnorm(1, 3000, 5000)))
+  data[[i]] <- sample(IDs, size)
 }
 
 
@@ -65,6 +68,17 @@ jaccard_indx <- matrix(nrow = 10, ncol = 10)
   }
 }
 
+
+#using sorenson-dice
+sorenson_dice_indx <- matrix(nrow = 10, ncol = 10)
+
+for(i in 1:10){
+  for(j in 1:10){
+    sorenson_dice_indx[i, j] <- 2*(length(intersect(data[[i]], data[[j]])))/(length(data[[i]]) + length(data[[j]]))
+  }
+}
+
+
 # turning data into the long format
 
 tb_overlap <- as_tibble(overlap) %>% 
@@ -78,6 +92,12 @@ tb_jaccard_indx <- as_tibble(jaccard_indx) %>%
   select(rowid, everything())
 tb_jaccard_indx <- pivot_longer(tb_jaccard_indx, cols= -rowid)
 
+tb_sorenson_dice_indx <- as_tibble(sorenson_dice_indx) %>% 
+  mutate(rowid = paste("inf", 1:10)) %>% 
+  select(rowid, everything())
+tb_sorenson_dice_indx <- pivot_longer(tb_sorenson_dice_indx, cols= -rowid)
+
+
 # plotting
 
 ggplot(data = tb_overlap_long)+
@@ -85,4 +105,7 @@ ggplot(data = tb_overlap_long)+
   scale_fill_fermenter()
 
 ggplot(data = tb_jaccard_indx)+
+  geom_tile(aes(name, rowid, fill = value))
+
+ggplot(data = tb_sorenson_dice_indx)+
   geom_tile(aes(name, rowid, fill = value))
