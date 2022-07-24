@@ -101,8 +101,7 @@ tb_sorenson_dice_indx <- pivot_longer(tb_sorenson_dice_indx, cols= -rowid)
 # plotting
 
 ggplot(data = tb_overlap_long)+
-  geom_tile(aes(rowid, name, fill = value))+
-  scale_fill_fermenter()
+  geom_tile(aes(rowid, name, fill = value))
 
 ggplot(data = tb_jaccard_indx)+
   geom_tile(aes(name, rowid, fill = value))
